@@ -26,6 +26,7 @@ def predict(data_type, seq_length, saved_model, image_shape, video_name):
 
     # Predict!
     stuff = np.expand_dims(sample, axis=0)
+    print(stuff.shape)
     prediction = model.predict(stuff)
     print(prediction)
     data.print_class_from_prediction(np.squeeze(prediction, axis=0))
@@ -47,7 +48,7 @@ def main():
     # TODO Make this way more useful. It should take in the path to
     # an actual video file, extract frames, generate sequences, etc.
     #video_name = 'v_Archery_g04_c02'
-    video_name = '0'
+    video_name = '193'
 
     # Chose images or features and image shape based on network.
     if model in ['conv_3d', 'c3d', 'lrcn']:
