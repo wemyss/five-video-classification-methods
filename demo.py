@@ -17,11 +17,11 @@ def predict(data_type, seq_length, saved_model, image_shape, video_name, class_l
 
     # Get the data and process it.
     if image_shape is None:
-        data = DataSet(seq_length=seq_length, class_limit=class_limit)
+        data = DataSet(seq_length=seq_length)
     else:
         data = DataSet(seq_length=seq_length, image_shape=image_shape,
             class_limit=class_limit)
-    
+
     # Extract the sample from the data.
     sample = data.get_frames_by_filename(video_name, data_type)
 
@@ -32,11 +32,11 @@ def predict(data_type, seq_length, saved_model, image_shape, video_name, class_l
 
 def main():
     # model can be one of lstm, lrcn, mlp, conv_3d, c3d.
-    model = 'lstm'
+    model = 'lrcn'
     # Must be a weights file.
-    saved_model = 'data/checkpoints/lstm-features.026-0.239.hdf5'
+    saved_model = 'data/checkpoints/lrcn-images.073-0.988.hdf5'
     # Sequence length must match the lengh used during training.
-    seq_length = 40
+    seq_length = 30
     # Limit must match that used during training.
     class_limit = 4
 
@@ -47,7 +47,7 @@ def main():
     # TODO Make this way more useful. It should take in the path to
     # an actual video file, extract frames, generate sequences, etc.
     #video_name = 'v_Archery_g04_c02'
-    video_name = 'v_ApplyLipstick_g01_c01'
+    video_name = '0'
 
     # Chose images or features and image shape based on network.
     if model in ['conv_3d', 'c3d', 'lrcn']:
