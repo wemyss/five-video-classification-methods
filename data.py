@@ -201,6 +201,10 @@ class DataSet():
                 X.append(sequence)
                 y.append(self.get_class_one_hot(sample[1]))
 
+            print('---- SAM WAS HERE ----')
+            print(np.array(X).shape)
+            print(np.array(y).shape)
+            print('---- END WAS HERE ----')
             yield np.array(X), np.array(y)
 
     def build_image_sequence(self, frames):
