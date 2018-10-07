@@ -12,15 +12,14 @@ from keras.models import load_model
 from data import DataSet
 import numpy as np
 
-def predict(data_type, seq_length, saved_model, image_shape, video_name, class_limit):
+def predict(data_type, seq_length, saved_model, image_shape, video_name):
     model = load_model(saved_model)
 
     # Get the data and process it.
     if image_shape is None:
         data = DataSet(seq_length=seq_length)
     else:
-        data = DataSet(seq_length=seq_length, image_shape=image_shape,
-            class_limit=class_limit)
+        data = DataSet(seq_length=seq_length, image_shape=image_shape)
 
     # Extract the sample from the data.
     sample = data.get_frames_by_filename(video_name, data_type)
@@ -38,7 +37,7 @@ def main():
     # Sequence length must match the lengh used during training.
     seq_length = 30
     # Limit must match that used during training.
-    class_limit = 4
+    # class_limit = 4
 
     # Demo file. Must already be extracted & features generated (if model requires)
     # Do not include the extension.
@@ -59,7 +58,7 @@ def main():
     else:
         raise ValueError("Invalid model. See train.py for options.")
 
-    predict(data_type, seq_length, saved_model, image_shape, video_name, class_limit)
+    predict(data_type, seq_length, saved_model, image_shape, video_name)
 
 if __name__ == '__main__':
     main()
