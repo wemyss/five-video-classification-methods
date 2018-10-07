@@ -25,7 +25,8 @@ def predict(data_type, seq_length, saved_model, image_shape, video_name):
     sample = data.get_frames_by_filename(video_name, data_type)
 
     # Predict!
-    prediction = model.predict(np.expand_dims(sample, axis=0))
+    stuff = np.expand_dims(sample, axis=0)
+    prediction = model.predict(stuff)
     print(prediction)
     data.print_class_from_prediction(np.squeeze(prediction, axis=0))
 
