@@ -201,11 +201,14 @@ class DataSet():
                 X.append(sequence)
                 y.append(self.get_class_one_hot(sample[1]))
 
+
+            aaa = np.array(X).reshape(-1, 80, 80, 3)
+            bbb = np.array(y).reshape(-1)
             print('---- SAM WAS HERE ----')
-            print(np.array(X).shape)
-            print(np.array(y).shape)
+            print(aaa.shape)
+            print(bbb.shape)
             print('---- END WAS HERE ----')
-            yield np.array(X), np.array(y)
+            yield aaa, bbb
 
     def build_image_sequence(self, frames):
         """Given a set of frames (filenames), build our sequence."""
