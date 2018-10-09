@@ -7,7 +7,7 @@ import numpy as np
 def process_image(image, target_shape):
     """Given an image, process it and return the array."""
     # Load the image.
-    h, w, _ = target_shape
+    h, w = target_shape
     image = load_img(image, target_size=(h, w))
 
     # Turn it into numpy, normalize and return.
