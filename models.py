@@ -165,15 +165,15 @@ class ResearchModels():
         model.add(Conv2D(
             32, (3,3), activation='relu', input_shape=self.input_shape
         ))
-        model.add(MaxPooling3D(pool_size=(1, 2), strides=(1, 2)))
+        model.add(MaxPooling2D(pool_size=(1, 2), strides=(1, 2)))
         model.add(Conv2D(64, (3,3), activation='relu'))
-        model.add(MaxPooling3D(pool_size=(1, 2, 2), strides=(1, 2)))
+        model.add(MaxPooling2D(pool_size=(1, 2, 2), strides=(1, 2)))
         model.add(Conv2D(128, (3,3), activation='relu'))
         model.add(Conv2D(128, (3,3), activation='relu'))
-        model.add(MaxPooling3D(pool_size=(1, 2), strides=(1, 2)))
+        model.add(MaxPooling2D(pool_size=(1, 2), strides=(1, 2)))
         model.add(Conv2D(256, (2,2), activation='relu'))
         model.add(Conv2D(256, (2,2), activation='relu'))
-        model.add(MaxPooling3D(pool_size=(1, 2), strides=(1, 2)))
+        model.add(MaxPooling2D(pool_size=(1, 2), strides=(1, 2)))
 
         model.add(Flatten())
         model.add(Dense(1024))
