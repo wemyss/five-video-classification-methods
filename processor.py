@@ -8,12 +8,13 @@ def process_image(image, target_shape):
     """Given an image, process it and return the array."""
     # Load the image.
     h, w = target_shape
-    image = load_img(image, target_size=(h, w))
+    image = load_img(image, target_size=(h, w), grayscale=True)
 
     # Turn it into numpy, normalize and return.
     img_arr = img_to_array(image)
-    x = (img_arr / 255.).astype(np.float32)
+    x = (img_arr / 255.).astype(np.float32).squeeze()
     print('kkkkkkkkkkkkkk')
     print(x.shape)
+    print(img_arr.shape)
     print('kkkkkkkkkkkkkk')
     return x
