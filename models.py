@@ -167,7 +167,7 @@ class ResearchModels():
         ))
         model.add(MaxPooling2D(pool_size=(1, 2), strides=(1, 2)))
         model.add(Conv2D(64, (3,3), activation='relu'))
-        model.add(MaxPooling2D(pool_size=(1, 2, 2), strides=(1, 2)))
+        model.add(MaxPooling2D(pool_size=(1, 2), strides=(1, 2)))
         model.add(Conv2D(128, (3,3), activation='relu'))
         model.add(Conv2D(128, (3,3), activation='relu'))
         model.add(MaxPooling2D(pool_size=(1, 2), strides=(1, 2)))
