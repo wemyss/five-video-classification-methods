@@ -209,10 +209,6 @@ class DataSet():
 
     def build_image_sequence(self, frames):
         """Given a set of frames (filenames), build our sequence."""
-        # print('(.)(.)')
-        # print(self.image_shape)
-        # print(frames)
-        # print('(.)(.)')
         return [process_image(x, self.image_shape) for x in frames]
 
     def get_extracted_sequence(self, data_type, sample):
