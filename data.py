@@ -201,18 +201,18 @@ class DataSet():
                 X.append(sequence)
                 y.append(self.get_class_one_hot(sample[1]))
             aaa, bbb = np.array(X), np.array(y)
-            print('---- SAM WAS HERE ----')
-            print(aaa.shape)
-            print(bbb.shape)
-            print('---- END WAS HERE ----')
+            # print('---- SAM WAS HERE ----')
+            # print(aaa.shape)
+            # print(bbb.shape)
+            # print('---- END WAS HERE ----')
             yield np.array(X), np.array(y)
 
     def build_image_sequence(self, frames):
         """Given a set of frames (filenames), build our sequence."""
-        print('(.)(.)')
-        print(self.image_shape)
-        print(frames)
-        print('(.)(.)')
+        # print('(.)(.)')
+        # print(self.image_shape)
+        # print(frames)
+        # print('(.)(.)')
         return [process_image(x, self.image_shape) for x in frames]
 
     def get_extracted_sequence(self, data_type, sample):
