@@ -50,7 +50,7 @@ class ResearchModels():
             self.model = self.lstm()
         elif model == 'lrcn':
             print("Loading CNN-LSTM model.")
-            self.input_shape = (seq_length, 80, 80, 3)
+            self.input_shape = (seq_length, 80, 80)
             self.model = self.lrcn()
         elif model == 'mlp':
             print("Loading simple MLP.")
@@ -58,11 +58,11 @@ class ResearchModels():
             self.model = self.mlp()
         elif model == 'conv_3d':
             print("Loading Conv3D")
-            self.input_shape = (seq_length, 80, 80, 3)
+            self.input_shape = (seq_length, 80, 80)
             self.model = self.conv_3d()
         elif model == 'c3d':
             print("Loading C3D")
-            self.input_shape = (seq_length, 80, 80, 3)
+            self.input_shape = (seq_length, 80, 80)
             self.model = self.c3d()
         else:
             print("Unknown network.")
