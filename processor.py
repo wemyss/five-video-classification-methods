@@ -8,7 +8,7 @@ def process_image(image, target_shape):
     """Given an image, process it and return the array."""
     # Load the image.
     h, w = target_shape
-    image = load_img(image, target_size=(h, w), grayscale=True)
+    image = load_img(image, target_size=(h, w), color_mode="grayscale")
 
     # Turn it into numpy, normalize and return.
     img_arr = img_to_array(image)

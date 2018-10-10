@@ -12,11 +12,15 @@ from keras.optimizers import SGD
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Model
 from keras.layers import Dense, GlobalAveragePooling2D
-from keras.callbacks import ModelCheckpoint, TensorBoard, EarlyStopping
+from keras.callbacks import ModelCheckpoint, TensorBoard, EarlyStopping, CSVLogger
 from data import DataSet
 import os.path
 
 data = DataSet()
+
+
+IMAGE_SIZE = (100,100)
+BATCH_SIZE = 32
 
 # Helper: Save the model.
 checkpointer = ModelCheckpoint(
@@ -29,6 +33,8 @@ early_stopper = EarlyStopping(patience=10)
 
 # Helper: TensorBoard
 tensorboard = TensorBoard(log_dir=os.path.join('data', 'logs'))
+
+# csv_logger = CSVLogger(filename='')
 
 def get_generators():
     train_datagen = ImageDataGenerator(
@@ -43,15 +49,15 @@ def get_generators():
 
     train_generator = train_datagen.flow_from_directory(
         os.path.join('data', 'train'),
-        target_size=(299, 299),
-        batch_size=32,
+        target_size=IMAGE_SIZE,
+        batch_size=BATCH_SIZE,
         classes=data.classes,
         class_mode='categorical')
 
     validation_generator = test_datagen.flow_from_directory(
         os.path.join('data', 'test'),
-        target_size=(299, 299),
-        batch_size=32,
+        target_size=IMAGE_SIZE,
+        batch_size=BATCH_SIZE,
         classes=data.classes,
         class_mode='categorical')
 

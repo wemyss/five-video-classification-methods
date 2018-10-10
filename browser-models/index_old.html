@@ -1,0 +1,111 @@
+<html>
+<body>
+	<script src="vendor/tf.min.js"></script>
+	<script>
+		const LABELS = [
+			'Drumming Fingers',
+			'Stop Sign',
+			'Swiping Left',
+			'Swiping Right',
+			'Thumb Down',
+			'Thumb Up',
+			'Turning Hand Clockwise',
+		]
+
+		function indexOfSmallest(a) {
+			let lowest = 0
+			for (let i = 1; i < a.length; ++i) {
+				if (a[i] < a[lowest]) lowest = i
+			}
+			return lowest
+		}
+
+		// Image loading
+		// ----------------------------------------
+		const NUM_FRAMES = 30
+		const IMAGE = '/test_data/121/'
+		let images = []
+
+		function imageLoaded(img) {
+			images.push(img)
+		}
+		function loadImages() {
+			for (let i = 1; i <= NUM_FRAMES; ++i) {
+				const img = new Image()
+				img.src = IMAGE + ('0000' + i).slice(-5) + '.jpg'
+
+				img.onload = () => imageLoaded(img)
+			}
+		}
+
+		// Pre-processing
+		// ----------------------------------------
+		function extract(img) {
+			// Use tidy to automatically clean up intermediate tensors
+			return tf.tidy(() => {
+				// Convert the image data to a tensor
+				let tensor = tf.fromPixels(img, numChannels = 1)
+
+				// resize to 80 x 80
+				const resized = tf.image.resizeBilinear(tensor, [80, 80]).toFloat()
+
+				// Normalize the image
+				const offset = tf.scalar(255.0)
+
+				// TODO: find a better normalization method - what does keras do, imagenet?
+				const normalized = tf.scalar(1.0).sub(resized.div(offset))
+				return normalized
+				// We add a dimension to get a batch shape
+				// const batched = normalized.expandDims(0)
+				// return batched
+			})
+		}
+
+
+		function preprocess(images) {
+			const sequence = tf
+				.stack(images.map(img => extract(img)), 0)
+				.squeeze()
+				.expandDims(0)
+
+			console.log(sequence.shape)
+			return sequence
+		}
+
+
+
+		// MAIN
+		// ----------------------------------------
+
+		loadImages()
+		// wait til they're done and then call main()
+		const waitForImages = setInterval(function() {
+			if (images.length === NUM_FRAMES) {
+				clearInterval(waitForImages)
+				console.log('All images loaded')
+				main()
+			}
+		}, 1000)
+
+
+
+		function main() {
+			const data = preprocess(images)
+
+			tf.loadModel('model.json')
+				.then(model => {
+					console.log(model)
+
+					window.prediction = model.predict(data, { verbose: true })
+					console.log(prediction)
+
+					const predResults = prediction.dataSync()
+					const labelledResults = LABELS
+						.map((l, i) => [l, predResults[i]])
+						.sort((a, b) => a[1] < b[1])
+					console.log(labelledResults.map(a => a.join(': ')))
+				})
+		}
+	</script>
+</body>
+</html>
