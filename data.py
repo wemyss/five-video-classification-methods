@@ -10,7 +10,20 @@ import sys
 import operator
 import threading
 from processor import process_image
+from keras.preprocessing.image import ImageDataGenerator
 from keras.utils import to_categorical
+
+
+
+aug_datagen = ImageDataGenerator(
+        zca_whitening=True,
+        rotation_range=10,
+        width_shift_range=.15,
+        height_shift_range=.15,
+        fill_mode='nearest')
+
+
+
 
 class threadsafe_iterator:
     def __init__(self, iterator):
@@ -206,6 +219,74 @@ class DataSet():
             # print(bbb.shape)
             # print('---- END WAS HERE ----')
             yield np.array(X), np.array(y)
+
+
+
+    @threadsafe_generator
+    def frame_generator2(self, batch_size, train_test, data_type):
+        """Return a generator that we can use to train on. There are
+        a couple different things we can return:
+
+        data_type: 'features', 'images'
+        """
+        # Get the right dataset for the generator.
+        train, test = self.split_train_test()
+        data = train if train_test == 'train' else test
+
+        print("Creating %s generator with %d samples." % (train_test, len(data)))
+
+        while 1:
+            X, y = [], []
+
+            # Reset to be safe.
+            sequence = None
+            augments = None
+
+            # Get a random sample.
+            sample = random.choice(data)
+
+            # Check to see if we've already saved this sequence.
+            if data_type == 'images':
+                # Get and resample frames.
+                frames = self.get_frames_for_sample(sample)
+                frames = self.rescale_list(frames, self.seq_length)
+
+                # Build the image sequence
+                augments = self.build_video_augments(batch_size, frames)
+            else:
+                raise ValueError("Not implemented")
+
+            X = augments
+            for _ in range(batch_size):
+                y.append(self.get_class_one_hot(sample[1]))
+
+
+            aaa, bbb = np.array(X), np.array(y)
+            # print('---- SAM WAS HERE ----')
+            # print(aaa.shape)
+            # print(bbb.shape)
+            # print('---- END WAS HERE ----')
+            yield np.array(X), np.array(y)
+
+
+    def build_video_augments(self, batch_size, frames):
+        frames = self.build_image_sequence(frames)
+
+        data = [] * batch_size
+        for frame in frames:
+            aug_datagen.fit(frame)
+
+            i = 0
+            for img_batch in aug_datagen.flow(frame, batch_size=batch_size, shuffle=False):
+                for img in img_batch:
+                    aug_datagen[i].append(img)
+                    i += 1
+
+                    if i >= batch_size:
+                        break
+
+        return data
+
 
     def build_image_sequence(self, frames):
         """Given a set of frames (filenames), build our sequence."""

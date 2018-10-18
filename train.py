@@ -1,7 +1,7 @@
 """
 Train our RNN on extracted features or images.
 """
-from keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping, CSVLogger
+from keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping, CSVLogger, ReduceLROnPlateau
 from models import ResearchModels
 from data import DataSet
 import time
@@ -23,8 +23,10 @@ def train(data_type, seq_length, model, saved_model=None,
     # Helper: TensorBoard
     tb = TensorBoard(log_dir=os.path.join('data', 'logs', model + str(timestamp)))
 
+    reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.3, patience=8, min_lr=1e-7)
+
     # Helper: Stop when we stop learning.
-    early_stopper = EarlyStopping(patience=15)
+    early_stopper = EarlyStopping(patience=25)
 
     # Helper: Save results.
     csv_logger = CSVLogger(os.path.join('data', 'logs', model + '-' + 'training-' + \
@@ -53,7 +55,7 @@ def train(data_type, seq_length, model, saved_model=None,
         X_test, y_test = data.get_all_sequences_in_memory('test', data_type)
     else:
         # Get generators.
-        generator = data.frame_generator(batch_size, 'train', data_type)
+        generator = data.frame_generator2(batch_size, 'train', data_type)
         val_generator = data.frame_generator(batch_size, 'test', data_type)
 
     # Get the model.
@@ -77,7 +79,7 @@ def train(data_type, seq_length, model, saved_model=None,
             steps_per_epoch=steps_per_epoch,
             epochs=nb_epoch,
             verbose=1,
-            callbacks=[tb, early_stopper, csv_logger, checkpointer],
+            callbacks=[tb, early_stopper, reduce_lr, csv_logger, checkpointer],
             validation_data=val_generator,
             validation_steps=40,
             workers=4)
@@ -88,9 +90,9 @@ def main():
     # model can be one of lstm, lrcn, mlp, conv_3d, c3d
 
     model = 'conv_3d'
-    saved_model = 'data/checkpoints/conv_3d-images.034-1.273.hdf5'  # None or weights file
+    saved_model = ''  # None or weights file
     class_limit = None  # int, can be 1-101 or None
-    seq_length = 30
+    seq_length = 20
     load_to_memory = False  # pre-load the sequences into memory
     batch_size = 32
     nb_epoch = 1000
