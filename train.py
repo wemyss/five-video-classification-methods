@@ -55,7 +55,7 @@ def train(data_type, seq_length, model, saved_model=None,
         X_test, y_test = data.get_all_sequences_in_memory('test', data_type)
     else:
         # Get generators.
-        generator = data.frame_generator2(batch_size, 'train', data_type)
+        generator = data.frame_generator(batch_size, 'train', data_type)
         val_generator = data.frame_generator(batch_size, 'test', data_type)
 
     # Get the model.
