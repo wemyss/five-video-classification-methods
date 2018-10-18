@@ -9,14 +9,14 @@ import os.path
 import sys
 import operator
 import threading
-from processor import process_image
+from processor import process_image, process_image2
 from keras.preprocessing.image import ImageDataGenerator
 from keras.utils import to_categorical
+from keras.backend import expand_dims
 
 
 
 aug_datagen = ImageDataGenerator(
-        zca_whitening=True,
         rotation_range=10,
         width_shift_range=.15,
         height_shift_range=.15,
@@ -270,19 +270,22 @@ class DataSet():
 
 
     def build_video_augments(self, batch_size, frames):
-        frames = self.build_image_sequence(frames)
+        sequence = [process_image2(x, self.image_shape) for x in frames]
 
         data = [] * batch_size
-        for frame in frames:
-            aug_datagen.fit(frame)
+        for s in sequence:
+            # aug_datagen.fit(s)
+            s = expand_dims(s, 0)
 
             i = 0
-            for img_batch in aug_datagen.flow(frame, batch_size=batch_size, shuffle=False):
+            for img_batch in aug_datagen.flow(s, batch_size=batch_size, shuffle=False):
                 for img in img_batch:
-                    aug_datagen[i].append(img)
+                    data[i].append(img)
                     i += 1
 
                     if i >= batch_size:
+                        break
+                if i >= batch_size:
                         break
 
         return data
