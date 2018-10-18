@@ -1,4 +1,4 @@
-"""
+ """
 Train our RNN on extracted features or images.
 """
 from keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping, CSVLogger
@@ -17,14 +17,16 @@ def train(data_type, seq_length, model, saved_model=None,
         verbose=1,
         save_best_only=True)
 
+
+    timestamp = time.time()
+
     # Helper: TensorBoard
-    tb = TensorBoard(log_dir=os.path.join('data', 'logs', model))
+    tb = TensorBoard(log_dir=os.path.join('data', 'logs', model + str(timestamp)))
 
     # Helper: Stop when we stop learning.
-    early_stopper = EarlyStopping(patience=5)
+    early_stopper = EarlyStopping(patience=15)
 
     # Helper: Save results.
-    timestamp = time.time()
     csv_logger = CSVLogger(os.path.join('data', 'logs', model + '-' + 'training-' + \
         str(timestamp) + '.log'))
 
@@ -85,8 +87,8 @@ def main():
     this file."""
     # model can be one of lstm, lrcn, mlp, conv_3d, c3d
 
-    model = 'lrcn'
-    saved_model = None  # None or weights file
+    model = 'conv_3d'
+    saved_model = 'data/checkpoints/conv_3d-images.034-1.273.hdf5'  # None or weights file
     class_limit = None  # int, can be 1-101 or None
     seq_length = 30
     load_to_memory = False  # pre-load the sequences into memory
