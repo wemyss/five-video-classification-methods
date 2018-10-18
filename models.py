@@ -43,7 +43,7 @@ class ResearchModels():
         # Get the appropriate model.
         if self.saved_model is not None:
             print("Loading model %s" % self.saved_model)
-            self.model = load_model(self.saved_model)
+            self.model = load_model(self.saved_model, custom_objects={'recall': recall, 'precision': precision, 'f1_score': f1_score, 'rmse': rmse, 'f1': f1, 'precision2': precision2, 'recall2': recall2})
         elif model == 'lstm':
             print("Loading LSTM model.")
             self.input_shape = (seq_length, features_length)
